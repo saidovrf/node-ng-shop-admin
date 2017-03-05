@@ -57,6 +57,23 @@
 					}
 				});
 				
+			},
+			delete: function(url, callback) {
+				$http({
+				  method: 'DELETE',
+				  url: url
+				}).then(function successCallback(response) {
+					if (response.status === 200) {
+						callback(response.data)
+					}
+				}, function errorCallback(response) {
+					if (response.status === 400 && response.data.code === "E_VALIDATION") {	
+						alert('Заполните все обязательные поля')
+					} else {
+						// error alert
+					}
+				});
+				
 			}
 		};
 	}])
@@ -107,16 +124,17 @@
 			name: ''
 		};
 
-		vm.doProduct = doProduct;
-
-		vm.newProduct = newProduct;
-		vm.newCategory = newCategory;
-
 		vm.changeProduct = changeProduct;
-		vm.changeCategory = changeCategory;
+		vm.doProduct = doProduct;
+		vm.removeProduct = removeProduct;
+		vm.removeProductConfirm = removeProductConfirm;
 
+		vm.newCategory = newCategory;
+		vm.removeCategory = removeCategory;
+		vm.removeCategoryConfirm = removeCategoryConfirm;
 
-		function _clone(obj) {
+		
+		function _cloneObject(obj) {
 		    if (null == obj || "object" != typeof obj) return obj;
 		    var copy = obj.constructor();
 		    for (var attr in obj) {
@@ -126,7 +144,7 @@
 		}
 
 		function changeProduct(key) {
-			vm.product = _clone(vm.products[key]);
+			vm.product = _cloneObject(vm.products[key]);
 			vm.product.change = true;
 			vm.product.key = key;
 
@@ -136,8 +154,56 @@
 			$('#productModal').modal('toggle');
 		}
 
-		function changeCategory(key) {
-			
+		function removeCategory() {
+			HTTP.delete('/categories/' + vm.category.id, function(response) {
+				vm.categoriesCount["0"] += vm.categoriesCount[vm.categories[vm.category.key].id];
+				
+				vm.categories.splice(vm.categoriesCount[vm.categories[vm.category.key].id], 1);;
+				vm.categories.splice(vm.category.key, 1);
+
+				$('#removeCategory').modal('toggle');
+
+				vm.category = {
+					name: ''
+				};
+			})
+		}
+
+		function removeProduct() {
+			var key = vm.product.key;
+
+			console.log('ff')
+
+			HTTP.delete('/products/' + vm.product.id, function(response) {
+				$('#removeProduct').modal('toggle');
+
+				if (vm.product.category) {
+					vm.categoriesCount[vm.product.category.id]--;
+				} else {
+					vm.categoriesCount["0"]--;
+				}
+
+				vm.products.splice(key, 1);
+
+				vm.product = {
+					name: '',
+					price_main: 0,
+					price: 0,
+					category: '0'
+				};
+			})
+		}
+
+		function removeCategoryConfirm(key) {
+			vm.category = _cloneObject(vm.categories[key]);
+			vm.category.key = key;
+			$('#removeCategory').modal('toggle');
+		}
+
+		function removeProductConfirm(key) {
+			vm.product = _cloneObject(vm.products[key]);
+			vm.product.key = key;
+			$('#removeProduct').modal('toggle');
 		}
 
 		function doProduct(operation) {
@@ -175,13 +241,14 @@
 					break;
 				case 'change':
 					var key = vm.product.key;
+					var oldCategory = vm.product.oldCategory;
 
 					delete vm.product.key;
 					delete vm.product.change;
 					delete vm.product.oldCategory;
 
 					HTTP.put('/products/' + vm.product.id, vm.product, function(response) {
-						vm.categoriesCount[vm.product.oldCategory]--;
+						vm.categoriesCount[oldCategory]--;
 
 						if (response.category) {
 							vm.categoriesCount[response.category.id]++;
@@ -199,13 +266,7 @@
 						};
 					})
 					break;
-
 			}
-		}
-
-
-		function newProduct() {
-			
 		}
 
 		function newCategory() {

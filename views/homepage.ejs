@@ -12,7 +12,7 @@
   <div class="col-md-4">
     <ul class="list-group">
       <li class="list-group-item" ng-repeat="(key, category) in vm.categories" ng-if="(category.id !== '0')"> 
-        <button type="button" class="btn btn-secondary btn-sm float-md-left">х</button> &nbsp;
+        <button type="button" ng-click="vm.removeCategoryConfirm(key)" class="btn btn-secondary btn-sm float-md-left">х</button> &nbsp;
         {{category.name}} &nbsp; <span class="badge badge-default">{{vm.categoriesCount[category.id]}}</span></li>
       <li class="list-group-item">Без названия &nbsp; <span class="badge badge-default">{{vm.categoriesCount["0"]}}</span></li>
     </ul>
@@ -37,7 +37,7 @@
           <td>{{product.price}}</td>
           <td>
             <div class="btn-group" role="group">
-              <button type="button" class="btn btn-secondary btn-sm">Удалить</button>
+              <button type="button" class="btn btn-secondary btn-sm" ng-click="vm.removeProductConfirm(key)">Удалить</button>
               <button type="button" class="btn btn-secondary btn-sm" ng-click="vm.changeProduct(key)">Изменить</button>
             </div>
           </td>
@@ -113,6 +113,51 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
         <button type="button" class="btn btn-primary" ng-click="vm.newCategory()">Добавить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="removeCategory" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Удалить категорию</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Вы действительно хотите удалить категорию? Все товары этой категории будут перенесены в категорию "Без названия".
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+        <button type="button" class="btn btn-primary" ng-click="vm.removeCategory()">Да</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="removeProduct" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Удалить продукт</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Вы действительно хотите удалить продукт?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+        <button type="button" class="btn btn-primary" ng-click="vm.removeProduct()">Да</button>
       </div>
     </div>
   </div>
