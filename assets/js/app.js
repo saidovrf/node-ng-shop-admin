@@ -39,6 +39,24 @@
 					}
 				});
 
+			},
+			put: function(url, data, callback) {
+				$http({
+				  method: 'PUT',
+				  url: url,
+				  data: data
+				}).then(function successCallback(response) {
+					if (response.status === 200) {
+						callback(response.data)
+					}
+				}, function errorCallback(response) {
+					if (response.status === 400 && response.data.code === "E_VALIDATION") {	
+						alert('Заполните все обязательные поля')
+					} else {
+						// error alert
+					}
+				});
+				
 			}
 		};
 	}])
@@ -89,11 +107,40 @@
 			name: ''
 		};
 
+		vm.doProduct = doProduct;
+
 		vm.newProduct = newProduct;
 		vm.newCategory = newCategory;
 
+		vm.changeProduct = changeProduct;
+		vm.changeCategory = changeCategory;
 
-		function newProduct() {
+
+		function _clone(obj) {
+		    if (null == obj || "object" != typeof obj) return obj;
+		    var copy = obj.constructor();
+		    for (var attr in obj) {
+		        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+		    }
+		    return copy;
+		}
+
+		function changeProduct(key) {
+			vm.product = _clone(vm.products[key]);
+			vm.product.change = true;
+			vm.product.key = key;
+
+			vm.product.category = (vm.products[key].category) ? vm.products[key].category.id : '0';
+			vm.product.oldCategory = vm.product.category;
+
+			$('#productModal').modal('toggle');
+		}
+
+		function changeCategory(key) {
+			
+		}
+
+		function doProduct(operation) {
 			if (vm.product.name.split(' ').join('').length === 0) {
 				alert('Введите название'); return;
 			}
@@ -101,28 +148,64 @@
 				alert('Значение любой стоимости должно быть выше 0'); return;
 			}
 
-			$('#createProduct').modal('toggle');
+			$('#productModal').modal('toggle');
 
 			if (vm.product.category === '0') {
-				delete vm.product.category;
+				vm.product.category = null;
 			}
 
-			HTTP.post('/products', vm.product, function(response) {
-				vm.products.push(response);
+			switch (operation) {
+				case 'create':
+					HTTP.post('/products', vm.product, function(response) {
+						vm.products.push(response);
 
-				if (response.category) {
-					vm.categoriesCount[response.category]++;
-				} else {
-					vm.categoriesCount["0"]++;
-				}
+						if (response.category) {
+							vm.categoriesCount[response.category]++;
+						} else {
+							vm.categoriesCount["0"]++;
+						}
 
-				vm.product = {
-					name: '',
-					price_main: 0,
-					price: 0,
-					category: '0'
-				};
-			})
+						vm.product = {
+							name: '',
+							price_main: 0,
+							price: 0,
+							category: '0'
+						};
+					})
+					break;
+				case 'change':
+					var key = vm.product.key;
+
+					delete vm.product.key;
+					delete vm.product.change;
+					delete vm.product.oldCategory;
+
+					HTTP.put('/products/' + vm.product.id, vm.product, function(response) {
+						vm.categoriesCount[vm.product.oldCategory]--;
+
+						if (response.category) {
+							vm.categoriesCount[response.category.id]++;
+						} else {
+							vm.categoriesCount["0"]++;
+						}
+
+						vm.products[key] = response;
+
+						vm.product = {
+							name: '',
+							price_main: 0,
+							price: 0,
+							category: '0'
+						};
+					})
+					break;
+
+			}
+		}
+
+
+		function newProduct() {
+			
 		}
 
 		function newCategory() {

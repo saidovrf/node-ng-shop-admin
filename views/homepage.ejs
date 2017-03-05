@@ -3,7 +3,7 @@
   <a class="navbar-brand" href="#">Shop Admin Panel</a>
   
   <div class="btn-group" role="group">
-    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#createProduct">Добавить товар</button>
+    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#productModal">Добавить товар</button>
     <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#createCategory">Добавить категорию</button>
   </div>
 
@@ -38,7 +38,7 @@
           <td>
             <div class="btn-group" role="group">
               <button type="button" class="btn btn-secondary btn-sm">Удалить</button>
-              <button type="button" class="btn btn-secondary btn-sm">Изменить</button>
+              <button type="button" class="btn btn-secondary btn-sm" ng-click="vm.changeProduct(key)">Изменить</button>
             </div>
           </td>
         </tr>
@@ -51,7 +51,7 @@
 
 
 
-<div class="modal fade" tabindex="-1" role="dialog" id="createProduct" aria-hidden="true">
+<div class="modal fade" tabindex="-1" role="dialog" id="productModal" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -85,7 +85,8 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-        <button type="button" class="btn btn-primary" ng-click="vm.newProduct()">Добавить</button>
+        <button type="button" class="btn btn-primary" ng-click="vm.doProduct('create')" ng-if="(!vm.product.change)">Добавить</button>
+        <button type="button" class="btn btn-primary" ng-click="vm.doProduct('change')" ng-if="(vm.product.change)">Изменить</button>
       </div>
     </div>
   </div>
