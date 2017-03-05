@@ -11,10 +11,10 @@
 <div class="row">
   <div class="col-md-4">
     <ul class="list-group">
-      <li class="list-group-item"> 
+      <li class="list-group-item" ng-repeat="(key, category) in vm.categories"> 
         <button type="button" class="btn btn-secondary btn-sm float-md-left">х</button> &nbsp;
-        Категория 1 &nbsp; <span class="badge badge-default">0</span></li>
-      <li class="list-group-item">Без названия &nbsp; <span class="badge badge-default">0</span></li>
+        {{category.name}} &nbsp; <span class="badge badge-default">{{vm.categoriesCount[category.id]}}</span></li>
+      <li class="list-group-item">Без названия &nbsp; <span class="badge badge-default">{{vm.categoriesCount["0"]}}</span></li>
     </ul>
   </div>
 
@@ -30,11 +30,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Товар 1</td>
-          <td>2000</td>
-          <td>2500</td>
+        <tr ng-repeat="(key, product) in vm.products">
+          <th scope="row">{{key + 1}}</th>
+          <td>{{product.name}}</td>
+          <td>{{product.price_main}}</td>
+          <td>{{product.price}}</td>
           <td>
             <div class="btn-group" role="group">
               <button type="button" class="btn btn-secondary btn-sm">Удалить</button>

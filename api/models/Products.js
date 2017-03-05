@@ -8,7 +8,21 @@
 module.exports = {
 
   attributes: {
-
+  	name: {
+  		required: true,
+  		type: 'string'
+  	},
+  	price_main: {
+  		required: true,
+  		type: 'float'
+  	},
+  	price: {
+  		required: true,
+  		type: 'float'
+  	},
+  	category: {
+  		model: 'Categories'
+  	}
   }
 };
 
