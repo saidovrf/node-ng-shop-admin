@@ -3,15 +3,15 @@
   <a class="navbar-brand" href="#">Shop Admin Panel</a>
   
   <div class="btn-group" role="group">
-    <button type="button" class="btn btn-secondary">Добавить товар</button>
-    <button type="button" class="btn btn-secondary">Добавить категорию</button>
+    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#createProduct">Добавить товар</button>
+    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#createCategory">Добавить категорию</button>
   </div>
 
 </nav>
 <div class="row">
   <div class="col-md-4">
     <ul class="list-group">
-      <li class="list-group-item" ng-repeat="(key, category) in vm.categories"> 
+      <li class="list-group-item" ng-repeat="(key, category) in vm.categories" ng-if="(category.id !== '0')"> 
         <button type="button" class="btn btn-secondary btn-sm float-md-left">х</button> &nbsp;
         {{category.name}} &nbsp; <span class="badge badge-default">{{vm.categoriesCount[category.id]}}</span></li>
       <li class="list-group-item">Без названия &nbsp; <span class="badge badge-default">{{vm.categoriesCount["0"]}}</span></li>
@@ -45,5 +45,74 @@
         
       </tbody>
     </table>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="createProduct" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Добавить товар</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          
+          <div class="input-group">
+            <span class="input-group-addon">Категория</span>
+            <select class="form-control" ng-model="vm.product.category">
+              <option ng-repeat="category in vm.categories" value="{{category.id}}" >{{category.name}}</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon">Название</span>
+            <input type="text" ng-model="vm.product.name" class="form-control">
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon">Закуп. стоимость</span>
+            <input type="number" ng-model="vm.product.price_main" class="form-control">
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon">Розничная цена</span>
+            <input type="number" ng-model="vm.product.price" class="form-control">
+          </div>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary" ng-click="vm.newProduct()">Добавить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="createCategory" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Добавить категорию</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          <div class="input-group">
+            <span class="input-group-addon">Название</span>
+            <input type="text" ng-model="vm.category.name" class="form-control">
+          </div>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary" ng-click="vm.newCategory()">Добавить</button>
+      </div>
+    </div>
   </div>
 </div>
