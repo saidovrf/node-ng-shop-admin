@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="ngShopAdmin">
   <head>
     <title><%=typeof title == 'undefined' ? 'New Sails App' : title%></title>
 
@@ -29,12 +29,15 @@
     -->
 
     <!--STYLES-->
-    <link rel="stylesheet" href="/styles/importer.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <!--STYLES END-->
   </head>
 
   <body>
+
+  <div class="container" ng-controller="CommonCtrl as vm">
     <%- body %>
+  </div>
 
 
 
@@ -89,6 +92,10 @@
 
     <!--SCRIPTS-->
     <script src="/js/dependencies/sails.io.js"></script>
+    <script src="/js/dependencies/angular.min.js"></script>
+    <script src="/js/dependencies/bootstrap.min.js"></script>
+    <script src="/js/dependencies/jquery.min.js"></script>
+    <script src="/js/app.js"></script>
     <!--SCRIPTS END-->
   </body>
 </html>
