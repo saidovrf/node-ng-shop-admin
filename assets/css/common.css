@@ -1,3 +1,43 @@
+body {
+	background: url('../images/back.jpg')
+}
+.navbar {
+	background: rgba(0,0,0,.5);
+}
+.navbar a {
+	color: #fff !important;
+}
+.navbar .btn-group {
+	position: absolute;
+    right: 15px;
+}
+
+
+
+.list-group .list-group-item {
+	background-color: rgba(0,0,0,.5) !important;
+	color: #fff !important;
+	border-radius: 0px !important;
+}
+.list-group .list-group-item:hover {
+	background-color: rgba(0,0,0,.6) !important;
+}
+
+
+
+.table thead tr th {
+	background-color: rgba(0,0,0,.5) !important;
+	color: #fff !important;
+}
+.table tbody {
+	background-color: rgba(255,255,255,.5);
+}
+.table tbody tr:hover {
+	background-color: rgba(255,255,255,.6);
+}
+
+
+
 .input-group-addon {
 	width: 200px;
 	text-align: right;
