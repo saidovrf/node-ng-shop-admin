@@ -3,23 +3,23 @@
   <a class="navbar-brand" href="#">Shop Admin Panel</a>
   
   <div class="btn-group" role="group">
-    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#productModal">Добавить товар</button>
-    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#createCategory">Добавить категорию</button>
+    <button type="button" class="btn btn-secondary" data-toggle="modal" ng-click="vm.createProduct()">Добавить товар</button>
+    <button type="button" class="btn btn-secondary" data-toggle="modal" ng-click="vm.createCategory()">Добавить категорию</button>
   </div>
 
 </nav>
 <div class="row">
   <div class="col-md-4">
-    <ul class="list-group">
+    <ul class="list-group loading-back loading-padding">
       <li class="list-group-item" ng-repeat="(key, category) in vm.categories" ng-if="(category.id !== '0')"> 
-        <button type="button" ng-click="vm.removeCategoryConfirm(key)" class="btn btn-secondary btn-sm float-md-left">х</button> &nbsp;
+        <button type="button" ng-click="vm.deleteCategory(key)" class="btn btn-secondary btn-sm float-md-left">✕</button> &nbsp;
         {{category.name}} &nbsp; <span class="badge badge-default">{{vm.categoriesCount[category.id]}}</span></li>
       <li class="list-group-item">Без названия &nbsp; <span class="badge badge-default">{{vm.categoriesCount["0"]}}</span></li>
     </ul>
   </div>
 
   <div class="col-md-8">
-    <table class="table">
+    <table class="table loading-back loading-padding">
       <thead class="thead-default">
         <tr>
           <th>ID</th>
@@ -37,7 +37,7 @@
           <td>{{product.price}}</td>
           <td>
             <div class="btn-group" role="group">
-              <button type="button" class="btn btn-secondary btn-sm" ng-click="vm.removeProductConfirm(key)">Удалить</button>
+              <button type="button" class="btn btn-secondary btn-sm" ng-click="vm.deleteProduct(key)">Удалить</button>
               <button type="button" class="btn btn-secondary btn-sm" ng-click="vm.changeProduct(key)">Изменить</button>
             </div>
           </td>
@@ -45,24 +45,44 @@
         
       </tbody>
     </table>
+
+    <table class="table" ng-if="(vm.products.length === 0)">
+      <tbody>
+        <tr>
+          <td style="text-align: center;">Список товаров пуст</td>
+        </tr>
+      </tbody>
+    </table>
+
   </div>
 </div>
 
 
 
 
-<div class="modal fade" tabindex="-1" role="dialog" id="productModal" aria-hidden="true">
+<div class="modal fade" tabindex="-1" role="dialog" id="prompt" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Добавить товар</h5>
+        <h5 class="modal-title" id="prompt-title"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>
-          
+
+        <div class="alert alert-danger" id="prompt-message" role="alert" style="display: none">
+          <strong>Oops!</strong> Change a few things up and try submitting again.
+        </div>
+
+        <div id="prompt-body-category">
+          <div class="input-group">
+            <span class="input-group-addon">Название</span>
+            <input type="text" ng-model="vm.category.name" class="form-control">
+          </div>
+        </div>
+
+        <div id="prompt-body-product" style="display: none">
           <div class="input-group">
             <span class="input-group-addon">Категория</span>
             <select class="form-control" ng-model="vm.product.category">
@@ -81,83 +101,42 @@
             <span class="input-group-addon">Розничная цена</span>
             <input type="number" ng-model="vm.product.price" class="form-control">
           </div>
-        </p>
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-        <button type="button" class="btn btn-primary" ng-click="vm.doProduct('create')" ng-if="(!vm.product.change)">Добавить</button>
-        <button type="button" class="btn btn-primary" ng-click="vm.doProduct('change')" ng-if="(vm.product.change)">Изменить</button>
+        <button type="button" class="btn btn-secondary" id="prompt-cancel">Отмена</button>
+        <button type="button" class="btn btn-primary" id="prompt-add">Добавить</button>
+        <button type="button" class="btn btn-primary" id="prompt-change">Изменить</button>
       </div>
     </div>
   </div>
 </div>
 
 
-<div class="modal fade" tabindex="-1" role="dialog" id="createCategory" aria-hidden="true">
+
+
+
+<div class="modal fade" id="confirm" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Добавить категорию</h5>
+        <h5 class="modal-title" id="confirm-title"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>
-          <div class="input-group">
-            <span class="input-group-addon">Название</span>
-            <input type="text" ng-model="vm.category.name" class="form-control">
-          </div>
+        <div class="alert alert-danger" id="confirm-message" role="alert" style="display: none">
+          <strong>Oops!</strong> Change a few things up and try submitting again.
+        </div>
+
+        <p id="confirm-text">
+          
         </p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-        <button type="button" class="btn btn-primary" ng-click="vm.newCategory()">Добавить</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" tabindex="-1" role="dialog" id="removeCategory" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Удалить категорию</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>
-          Вы действительно хотите удалить категорию? Все товары этой категории будут перенесены в категорию "Без названия".
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
-        <button type="button" class="btn btn-primary" ng-click="vm.removeCategory()">Да</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div class="modal fade" tabindex="-1" role="dialog" id="removeProduct" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Удалить продукт</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>
-          Вы действительно хотите удалить продукт?
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
-        <button type="button" class="btn btn-primary" ng-click="vm.removeProduct()">Да</button>
+        <button type="button" class="btn btn-secondary" id="confirm-dismiss">Нет</button>
+        <button type="button" class="btn btn-primary" id="confirm-ok">Да</button>
       </div>
     </div>
   </div>

@@ -4,10 +4,12 @@
 	angular.module('ngShopAdmin')
 
 
-	.controller('CommonCtrl', ['$scope', 'HTTP', CommonCtrl]);
+	.controller('CommonCtrl', ['$scope', 'HTTP', 'Alert', CommonCtrl]);
 
-	function CommonCtrl($scope, HTTP){
+	function CommonCtrl($scope, HTTP, Alert){
 		var vm = this;
+
+		document.querySelector('.loading-init').classList.remove("loading-init");
 
 		vm.products = [];
 		vm.categories = [];
@@ -24,16 +26,31 @@
 			name: ''
 		};
 
+		vm.createProduct = createProduct;
+		vm.createCategory = createCategory;
+
 		vm.changeProduct = changeProduct;
-		vm.doProduct = doProduct;
-		vm.removeProduct = removeProduct;
-		vm.removeProductConfirm = removeProductConfirm;
 
-		vm.newCategory = newCategory;
-		vm.removeCategory = removeCategory;
-		vm.removeCategoryConfirm = removeCategoryConfirm;
+		vm.deleteProduct = deleteProduct;
+		vm.deleteCategory = deleteCategory;
 
-		
+
+		/************************************************************************/
+		/* 		Private functions 												*/
+		/************************************************************************/
+		function _cleanProductFields() {
+			vm.product = {
+				name: '',
+				price_main: 0,
+				price: 0,
+				category: '0'
+			};
+		}
+		function _cleanCategoryFields() {
+			vm.category = {
+				name: ''
+			};
+		}
 		function _cloneObject(obj) {
 		    if (null == obj || "object" != typeof obj) return obj;
 		    var copy = obj.constructor();
@@ -43,150 +60,165 @@
 		    return copy;
 		}
 
-		function changeProduct(key) {
-			vm.product = _cloneObject(vm.products[key]);
-			vm.product.change = true;
-			vm.product.key = key;
 
-			vm.product.category = (vm.products[key].category) ? vm.products[key].category.id : '0';
-			vm.product.oldCategory = vm.product.category;
 
-			$('#productModal').modal('toggle');
-		}
 
-		function removeCategory() {
-			HTTP.delete('/categories/' + vm.category.id, function(response) {
-				vm.categoriesCount["0"] += vm.categoriesCount[vm.categories[vm.category.key].id];
-				
-				vm.categories.splice(vm.categoriesCount[vm.categories[vm.category.key].id], 1);;
-				vm.categories.splice(vm.category.key, 1);
 
-				$('#removeCategory').modal('toggle');
+		/************************************************************************/
+		/* 		Creating functions 												*/
+		/************************************************************************/
+		function createProduct() {
+			_cleanProductFields();
 
-				vm.category = {
-					name: ''
-				};
-			})
-		}
-
-		function removeProduct() {
-			var key = vm.product.key;
-
-			console.log('ff')
-
-			HTTP.delete('/products/' + vm.product.id, function(response) {
-				$('#removeProduct').modal('toggle');
-
-				if (vm.product.category) {
-					vm.categoriesCount[vm.product.category.id]--;
-				} else {
-					vm.categoriesCount["0"]--;
+			Alert.showPrompt('Добавить товар', {create: true, type: 'product'}, function() {
+				if (vm.product.name.split(' ').join('').length === 0) {
+					Alert.showPromptErrorMessage('Введите название товара'); return;
+				}
+				if (vm.product.price_main <= 0 || vm.product.price <= 0) {
+					Alert.showPromptErrorMessage('Значение любой стоимости должно быть выше 0'); return;
 				}
 
-				vm.products.splice(key, 1);
+				if (vm.product.category === '0') {
+					vm.product.category = null;
+				}
 
-				vm.product = {
-					name: '',
-					price_main: 0,
-					price: 0,
-					category: '0'
-				};
-			})
+				HTTP.post('/products', vm.product, function(response) {
+					vm.products.push(response);
+
+					if (response.category) {
+						vm.categoriesCount[response.category]++;
+					} else {
+						vm.categoriesCount["0"]++;
+					}
+
+					Alert.hidePrompt();
+
+					_cleanProductFields();
+				}, function(response) {
+					Alert.showPromptErrorMessage('<strong>' + response.status + '</strong> ' + response.data.details);
+				})
+				
+			});
+		}
+		function createCategory() {
+			_cleanCategoryFields();
+
+			Alert.showPrompt('Добавить категорию', {create: true, type: 'category'}, function() {
+				if (vm.category.name.split(' ').join('').length === 0) {
+					Alert.showPromptErrorMessage('Введите название'); return;
+				}
+
+				HTTP.post('/categories', vm.category, function(response) {
+					vm.categories.push(response);
+
+					vm.categoriesCount[response.id] = 0;
+
+					Alert.hidePrompt();
+					_cleanCategoryFields();
+				}, function(response) {
+					Alert.showPromptErrorMessage('<strong>' + response.status + '</strong> ' + response.data.details);
+				});
+				
+			});
 		}
 
-		function removeCategoryConfirm(key) {
-			vm.category = _cloneObject(vm.categories[key]);
-			vm.category.key = key;
-			$('#removeCategory').modal('toggle');
-		}
+		
 
-		function removeProductConfirm(key) {
+		/************************************************************************/
+		/* 		Change product function 										*/
+		/************************************************************************/
+		function changeProduct(key) {
+			var oldCategory;
+
+			_cleanProductFields();
+
 			vm.product = _cloneObject(vm.products[key]);
-			vm.product.key = key;
-			$('#removeProduct').modal('toggle');
+			vm.product.category = (vm.products[key].category) ? vm.products[key].category.id : '0';
+			oldCategory = vm.product.category;
+
+			Alert.showPrompt('Изменить товар', {change: true, type: 'product'}, function() {
+				
+				if (vm.product.name.split(' ').join('').length === 0) {
+					Alert.showPromptErrorMessage('Введите название товара'); return;
+				}
+				if (vm.product.price_main <= 0 || vm.product.price <= 0) {
+					Alert.showPromptErrorMessage('Значение любой стоимости должно быть выше 0'); return;
+				}
+
+				if (vm.product.category === '0') {
+					vm.product.category = null;
+				}
+
+				HTTP.put('/products/' + vm.product.id, vm.product, function(response) {
+					vm.categoriesCount[oldCategory]--;
+
+					if (response.category) {
+						vm.categoriesCount[response.category.id]++;
+					} else {
+						vm.categoriesCount["0"]++;
+					}
+
+					vm.products[key] = response;
+
+					Alert.hidePrompt();
+					_cleanProductFields();
+				}, function(response) {
+					Alert.showPromptErrorMessage('<strong>' + response.status + '</strong> ' + response.data.details);
+				})
+				
+			});
 		}
 
-		function doProduct(operation) {
-			if (vm.product.name.split(' ').join('').length === 0) {
-				alert('Введите название'); return;
-			}
-			if (vm.product.price_main <= 0 || vm.product.price <= 0) {
-				alert('Значение любой стоимости должно быть выше 0'); return;
-			}
 
-			$('#productModal').modal('toggle');
+		/************************************************************************/
+		/* 		Removing functions 												*/
+		/************************************************************************/
+		function deleteCategory(key) {
+			Alert.showConfirm('Удалить категорию', 'Вы действительно хотите удалить эту категорию?<br>Все товары будут перенесены в категорию "Без названия"', function() {
+				var category = vm.categories[key];
 
-			if (vm.product.category === '0') {
-				vm.product.category = null;
-			}
+				HTTP.delete('/categories/' + category.id, function(response) {
+					vm.categoriesCount["0"] += vm.categoriesCount[category.id];
+					
+					delete vm.categoriesCount[category.id];
+					vm.categories.splice(key, 1);
 
-			switch (operation) {
-				case 'create':
-					HTTP.post('/products', vm.product, function(response) {
-						vm.products.push(response);
+					Alert.hideConfirm();
+				}, function(response) {
+					Alert.showConfirmErrorMessage('<strong>' + response.status + '</strong> ' + response.data.details);
+				})
+			});
+		};
+		function deleteProduct(key) {
+			Alert.showConfirm('Удалить товар', 'Вы действительно хотите удалить этот товар?', function() {
+				var product = vm.products[key];
 
-						if (response.category) {
-							vm.categoriesCount[response.category]++;
-						} else {
-							vm.categoriesCount["0"]++;
-						}
+				HTTP.delete('/products/' + product.id, function(response) {
+					if (product.category) {
+						vm.categoriesCount[product.category.id]--;
+					} else {
+						vm.categoriesCount["0"]--;
+					}
 
-						vm.product = {
-							name: '',
-							price_main: 0,
-							price: 0,
-							category: '0'
-						};
-					})
-					break;
-				case 'change':
-					var key = vm.product.key;
-					var oldCategory = vm.product.oldCategory;
+					vm.products.splice(key, 1);
 
-					delete vm.product.key;
-					delete vm.product.change;
-					delete vm.product.oldCategory;
+					Alert.hideConfirm();
+				}, function(response) {
+					Alert.showConfirmErrorMessage('<strong>' + response.status + '</strong> ' + response.data.details);
+				})
+			});
+		};
 
-					HTTP.put('/products/' + vm.product.id, vm.product, function(response) {
-						vm.categoriesCount[oldCategory]--;
+		// function changeProduct(key) {
+		// 	vm.product = _cloneObject(vm.products[key]);
+		// 	vm.product.change = true;
+		// 	vm.product.key = key;
 
-						if (response.category) {
-							vm.categoriesCount[response.category.id]++;
-						} else {
-							vm.categoriesCount["0"]++;
-						}
+		// 	vm.product.category = (vm.products[key].category) ? vm.products[key].category.id : '0';
+		// 	vm.product.oldCategory = vm.product.category;
 
-						vm.products[key] = response;
-
-						vm.product = {
-							name: '',
-							price_main: 0,
-							price: 0,
-							category: '0'
-						};
-					})
-					break;
-			}
-		}
-
-		function newCategory() {
-
-			if (vm.category.name.split(' ').join('').length === 0) {
-				alert('Введите название'); return;
-			}
-
-			$('#createCategory').modal('toggle');
-
-			HTTP.post('/categories', vm.category, function(response) {
-				vm.categories.push(response);
-
-				vm.categoriesCount[response.id] = 0;
-
-				vm.category = {
-					name: ''
-				};
-			})
-		}
+		// 	$('#productModal').modal('toggle');
+		// }
 
 		// $scope.$on('products_changed', function(e, d) {
 		// 	vm.products = d;
@@ -206,6 +238,9 @@
 				vm.categoriesCount[vm.categories[i].id] = 0;
 			}
 
+			document.querySelector('.col-md-4 .loading-back').classList.remove("loading-back");
+			document.querySelector('.col-md-4 .loading-padding').classList.remove("loading-padding");
+
 			HTTP.get('/products', function(response) {
 				vm.products = response;
 				
@@ -218,6 +253,9 @@
 						vm.categoriesCount["0"]++;
 					}
 				}
+
+				document.querySelector('.col-md-8 .loading-back').classList.remove("loading-back");
+				document.querySelector('.col-md-8 .loading-padding').classList.remove("loading-padding");
 			});
 		});
 	}
