@@ -14,7 +14,10 @@
 	            	case '0':
 	            		if (!input[i].category) response = response.concat(input[i]); break;
 	            	default:
-	            		if (input[i].category.id === selected) response = response.concat(input[i]); break;
+	            		if (input[i].category) {
+	            			if (input[i].category.id === selected) response = response.concat(input[i]); break;
+	            		}
+	            		
 	            }
         	}
             
