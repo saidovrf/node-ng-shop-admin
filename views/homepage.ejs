@@ -13,8 +13,8 @@
     <ul class="list-group loading-back loading-padding">
       <li class="list-group-item" ng-repeat="(key, category) in vm.categories" ng-if="(category.id !== '0')"> 
         <button type="button" ng-click="vm.deleteCategory(key)" class="btn btn-secondary btn-sm float-md-left">✕</button> &nbsp;
-        {{category.name}} &nbsp; <span class="badge badge-default">{{vm.categoriesCount[category.id]}}</span></li>
-      <li class="list-group-item">Без названия &nbsp; <span class="badge badge-default">{{vm.categoriesCount["0"]}}</span></li>
+        <a href="#" ng-click="vm.filterProducts(key)">{{category.name}}</a> &nbsp; <span class="badge badge-default">{{vm.categoriesCount[category.id]}}</span></li>
+      <li class="list-group-item"><a href="#" ng-click="vm.filterProducts('0')">Без названия</a> &nbsp; <span class="badge badge-default">{{vm.categoriesCount["0"]}}</span></li>
     </ul>
   </div>
 
@@ -30,8 +30,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="(key, product) in vm.products">
-          <th scope="row">{{key + 1}}</th>
+        <tr ng-repeat="(key, product) in vm.products | productsFilter:vm.filter">
+          <th scope="row">{{product.pseudoID}}</th>
           <td>{{product.name}}</td>
           <td>{{product.price_main}}</td>
           <td>{{product.price}}</td>

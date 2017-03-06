@@ -3,6 +3,25 @@
 	
 	angular.module('ngShopAdmin', [])
 
+	.filter('productsFilter', function() {
+        return function(input, selected) {
+        	var response = [];
+
+        	for (var i = 0; i < input.length; i++) {
+        		switch(selected) {
+	            	case '':
+	            		response = response.concat(input[i]); break;
+	            	case '0':
+	            		if (!input[i].category) response = response.concat(input[i]); break;
+	            	default:
+	            		if (input[i].category.id === selected) response = response.concat(input[i]); break;
+	            }
+        	}
+            
+            return response;
+        }
+    })
+
 	.factory('Alert', function(){
 		
 		function _removeEvents(element) {
@@ -173,31 +192,5 @@
 			}
 		};
 	}])
-
-	// .factory('Products', ['$rootScope', function($rootScope){
-	// 	var _productsList = [];
-	// 	return {
-	// 		get: function() {
-	// 			return _productsList;
-	// 		},
-	// 		set: function(value) {
-	// 			_productsList = value;
-	// 			$rootScope.$broadcast('products_changed', value);
-	// 		}
-	// 	};
-	// }])
-
-	// .factory('Categories', ['$rootScope', function($rootScope){
-	// 	var _categoriesList = [];
-	// 	return {
-	// 		get: function() {
-	// 			return _categoriesList;
-	// 		},
-	// 		set: function(value) {
-	// 			_categoriesList = value;
-	// 			$rootScope.$broadcast('categories_changed', value);
-	// 		}
-	// 	};
-	// }])
 
 }());

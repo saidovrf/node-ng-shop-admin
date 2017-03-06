@@ -26,6 +26,8 @@
 			name: ''
 		};
 
+		vm.filter = '';
+
 		vm.createProduct = createProduct;
 		vm.createCategory = createCategory;
 
@@ -33,6 +35,8 @@
 
 		vm.deleteProduct = deleteProduct;
 		vm.deleteCategory = deleteCategory;
+
+		vm.filterProducts = filterProducts;
 
 
 		/************************************************************************/
@@ -60,7 +64,36 @@
 		    return copy;
 		}
 
+		function _cleanFilter() {
+			var categoryDOMElements = document.querySelectorAll('.list-group-item.disabled');
 
+			vm.filter = '';
+
+			for (var i = 0; i < categoryDOMElements.length; i++) {
+				categoryDOMElements[i].classList.remove("disabled");
+			}
+		}
+
+
+		/************************************************************************/
+		/* 		Filtering function 												*/
+		/************************************************************************/
+		function filterProducts(key) {
+			if (vm.filter) {
+				_cleanFilter();
+			} else {
+				var categoryDOMElements = document.getElementsByClassName('list-group-item');
+
+				vm.filter = vm.categories[key].id;
+
+				for (var i=0; i < categoryDOMElements.length; i++) {
+				    if (key-1 !== i) categoryDOMElements[i].className += " disabled";
+				}
+
+				if (key === '0') categoryDOMElements[categoryDOMElements.length-1].classList.remove("disabled");
+			}
+			
+		}
 
 
 
@@ -102,6 +135,7 @@
 		}
 		function createCategory() {
 			_cleanCategoryFields();
+			_cleanFilter();
 
 			Alert.showPrompt('Добавить категорию', {create: true, type: 'category'}, function() {
 				if (vm.category.name.split(' ').join('').length === 0) {
@@ -177,6 +211,8 @@
 			Alert.showConfirm('Удалить категорию', 'Вы действительно хотите удалить эту категорию?<br>Все товары будут перенесены в категорию "Без названия"', function() {
 				var category = vm.categories[key];
 
+				_cleanFilter();
+
 				HTTP.delete('/categories/' + category.id, function(response) {
 					vm.categoriesCount["0"] += vm.categoriesCount[category.id];
 					
@@ -209,23 +245,8 @@
 			});
 		};
 
-		// function changeProduct(key) {
-		// 	vm.product = _cloneObject(vm.products[key]);
-		// 	vm.product.change = true;
-		// 	vm.product.key = key;
 
-		// 	vm.product.category = (vm.products[key].category) ? vm.products[key].category.id : '0';
-		// 	vm.product.oldCategory = vm.product.category;
 
-		// 	$('#productModal').modal('toggle');
-		// }
-
-		// $scope.$on('products_changed', function(e, d) {
-		// 	vm.products = d;
-		// })
-		// $scope.$on('categories_changed', function(e, d) {
-		// 	vm.categories = d;
-		// })
 
 		HTTP.get('/categories', function(response) {
 			vm.categories = [{
@@ -243,6 +264,10 @@
 
 			HTTP.get('/products', function(response) {
 				vm.products = response;
+
+				for (var i = 0; i < vm.products.length; i++) {
+					vm.products[i].pseudoID = i + 1;
+				}
 				
 				vm.categoriesCount["0"] = 0;
 
