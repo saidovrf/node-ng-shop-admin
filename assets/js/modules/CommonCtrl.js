@@ -65,13 +65,13 @@
 		}
 
 		function _cleanFilter() {
-			var categoryDOMElements = document.querySelectorAll('.list-group-item.disabled');
+			// var categoryDOMElements = document.querySelectorAll('.list-group-item.disabled');
 
 			vm.filter = '';
 
-			for (var i = 0; i < categoryDOMElements.length; i++) {
-				categoryDOMElements[i].classList.remove("disabled");
-			}
+			// for (var i = 0; i < categoryDOMElements.length; i++) {
+			// 	categoryDOMElements[i].classList.remove("disabled");
+			// }
 		}
 
 
@@ -79,18 +79,18 @@
 		/* 		Filtering function 												*/
 		/************************************************************************/
 		function filterProducts(key) {
-			if (vm.filter) {
+			if (vm.filter == vm.categories[key].id) {
 				_cleanFilter();
 			} else {
-				var categoryDOMElements = document.getElementsByClassName('list-group-item');
+				// var categoryDOMElements = document.getElementsByClassName('list-group-item');
 
 				vm.filter = vm.categories[key].id;
 
-				for (var i=0; i < categoryDOMElements.length; i++) {
-				    if (key-1 !== i) categoryDOMElements[i].className += " disabled";
-				}
+				// for (var i=0; i < categoryDOMElements.length; i++) {
+				//     if (key-1 !== i) categoryDOMElements[i].className += " disabled";
+				// }
 
-				if (key === '0') categoryDOMElements[categoryDOMElements.length-1].classList.remove("disabled");
+				// if (key === '0') categoryDOMElements[categoryDOMElements.length-1].classList.remove("disabled");
 			}
 			
 		}
