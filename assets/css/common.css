@@ -86,18 +86,20 @@ body {
 .loading-back.loading-padding:after {
 	width: auto !important;
 	left: 15px; right: 15px;
-	z-index: 999999;
+	z-index: 99999999 !important; 
 }
 .loading-back:before {
 	background-color: rgba(255,255,255,.8);
+	z-index: 99999999 !important; 
 }
 .loading-back:after {
 	background: url(../images/loading.gif) center center no-repeat;
+	z-index: 99999999 !important; 
 }
 
 
 .loading-init:before {
-	z-index: 9999999;
+	z-index: 999999999;
 	background:
 		radial-gradient(hsl(0, 100%, 27%) 4%, hsl(0, 100%, 18%) 9%, hsla(0, 100%, 20%, 0) 9%) 0 0,
 		radial-gradient(hsl(0, 100%, 27%) 4%, hsl(0, 100%, 18%) 8%, hsla(0, 100%, 20%, 0) 10%) 50px 50px,
@@ -113,7 +115,7 @@ body {
 	background-size: 100px 100px;
 }
 .loading-init:after {
-	z-index: 9999999;
+	z-index: 999999999;
 	content: 'Загрузка приложения. Пожалуйста, подождите...';
 	padding-top: 70px;
 	color: #fff;
