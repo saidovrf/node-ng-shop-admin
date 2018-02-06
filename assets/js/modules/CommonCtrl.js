@@ -1,6 +1,6 @@
 (function () {
 	'use strict';
-	
+
 	angular.module('ngShopAdmin')
 
 
@@ -92,7 +92,7 @@
 
 				// if (key === '0') categoryDOMElements[categoryDOMElements.length-1].classList.remove("disabled");
 			}
-			
+
 		}
 
 
@@ -130,7 +130,7 @@
 				}, function(response) {
 					Alert.showPromptErrorMessage('<strong>' + response.status + '</strong> ' + response.data.details);
 				})
-				
+
 			});
 		}
 		function createCategory() {
@@ -152,11 +152,11 @@
 				}, function(response) {
 					Alert.showPromptErrorMessage('<strong>' + response.status + '</strong> ' + response.data.details);
 				});
-				
+
 			});
 		}
 
-		
+
 
 		/************************************************************************/
 		/* 		Change product function 										*/
@@ -171,7 +171,7 @@
 			oldCategory = vm.product.category;
 
 			Alert.showPrompt('Изменить товар', {change: true, type: 'product'}, function() {
-				
+
 				if (vm.product.name.split(' ').join('').length === 0) {
 					Alert.showPromptErrorMessage('Введите название товара'); return;
 				}
@@ -199,7 +199,7 @@
 				}, function(response) {
 					Alert.showPromptErrorMessage('<strong>' + response.status + '</strong> ' + response.data.details);
 				})
-				
+
 			});
 		}
 
@@ -215,7 +215,7 @@
 
 				HTTP.delete('/categories/' + category.id, function(response) {
 					vm.categoriesCount["0"] += vm.categoriesCount[category.id];
-					
+
 					delete vm.categoriesCount[category.id];
 					vm.categories.splice(key, 1);
 
@@ -259,8 +259,8 @@
 				vm.categoriesCount[vm.categories[i].id] = 0;
 			}
 
-			document.querySelector('.col-md-4 .loading-back').classList.remove("loading-back");
-			document.querySelector('.col-md-4 .loading-padding').classList.remove("loading-padding");
+			document.querySelector('.loading-back').classList.remove("loading-back");
+			document.querySelector('.loading-padding').classList.remove("loading-padding");
 
 			HTTP.get('/products', function(response) {
 				vm.products = response;
@@ -268,7 +268,7 @@
 				for (var i = 0; i < vm.products.length; i++) {
 					vm.products[i].pseudoID = i + 1;
 				}
-				
+
 				vm.categoriesCount["0"] = 0;
 
 				for (var i = 0; i < vm.products.length; i++) {
@@ -279,8 +279,8 @@
 					}
 				}
 
-				document.querySelector('.col-md-8 .loading-back').classList.remove("loading-back");
-				document.querySelector('.col-md-8 .loading-padding').classList.remove("loading-padding");
+				document.querySelector('.loading-back').classList.remove("loading-back");
+				document.querySelector('.loading-padding').classList.remove("loading-padding");
 			});
 		});
 	}

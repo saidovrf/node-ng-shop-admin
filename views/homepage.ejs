@@ -1,26 +1,31 @@
-<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-  
-  <a class="navbar-brand" href="#">Shop Admin Panel</a>
-  
-  <div class="btn-group" role="group">
-    <button type="button" class="btn btn-secondary" data-toggle="modal" ng-click="vm.createProduct()">Добавить товар</button>
-    <button type="button" class="btn btn-secondary" data-toggle="modal" ng-click="vm.createCategory()">Добавить категорию</button>
-  </div>
 
-</nav>
-<div class="row">
-  <div class="col-md-4">
-    <ul class="list-group loading-back loading-padding">
-      <li class="list-group-item" ng-repeat="(key, category) in vm.categories" ng-if="(category.id !== '0')"> 
-        <button type="button" ng-click="vm.deleteCategory(key)" class="btn btn-secondary btn-sm float-md-left">✕</button> &nbsp;
-        <a href="#" ng-click="vm.filterProducts(key)">{{category.name}}</a> &nbsp; <span class="badge badge-default">{{vm.categoriesCount[category.id]}}</span></li>
-      <li class="list-group-item"><a href="#" ng-click="vm.filterProducts('0')">Без названия</a> &nbsp; <span class="badge badge-default">{{vm.categoriesCount["0"]}}</span></li>
-    </ul>
-  </div>
+<div class="uk-card uk-card-default uk-card-body" style="z-index: 980;" uk-sticky="bottom: #offset">
+  <span uk-icon="icon: cart; ratio: 2"></span> CreativeShop
 
-  <div class="col-md-8">
-    <table class="table loading-back loading-padding">
-      <thead class="thead-default">
+  <a href="" class="uk-icon-button" uk-icon="twitter"></a>
+  <a href="" class="uk-icon-button" uk-icon="twitter"></a>
+</div>
+
+
+<div>
+<div class="uk-grid-collapse uk-child-width-expand@s uk-text-center" uk-grid>
+  <div class="uk-width-1-4@m">
+    <div class="menubar uk-padding-small loading-back loading-padding">
+      <h4>Категории:</h4>
+      <ul class="uk-list uk-list-divider">
+        <li ng-repeat="(key, category) in vm.categories" ng-if="(category.id !== '0')">
+          <button type="button" ng-click="vm.deleteCategory(key)" class="btn btn-secondary btn-sm float-md-left">✕</button> &nbsp;
+          <a href="#" ng-click="vm.filterProducts(key)">{{category.name}}</a> <span class="uk-badge uk-float-left">{{vm.categoriesCount[category.id]}}</span></li>
+        </li>
+        <li><a href="#" ng-click="vm.filterProducts('0')">Без названия</a> <span class="uk-badge uk-float-left">{{vm.categoriesCount["0"]}}</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="uk-width-3-4@m">
+    <div class="uk-padding-small uk-light">
+
+      <table class="table loading-back loading-padding">
+        <thead class="thead-default">
         <tr>
           <th>ID</th>
           <th>Название товара</th>
@@ -28,8 +33,8 @@
           <th>Цена</th>
           <th></th>
         </tr>
-      </thead>
-      <tbody>
+        </thead>
+        <tbody>
         <tr ng-repeat="(key, product) in vm.products | productsFilter:vm.filter">
           <th scope="row">{{product.pseudoID}}</th>
           <td>{{product.name}}</td>
@@ -42,39 +47,49 @@
             </div>
           </td>
         </tr>
-        
-      </tbody>
-    </table>
 
-    <table class="table" ng-if="(vm.products.length === 0)">
-      <tbody>
+        </tbody>
+      </table>
+
+      <table class="table" ng-if="(vm.products.length === 0)">
+        <tbody>
         <tr>
           <td style="text-align: center;">Список товаров пуст</td>
         </tr>
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+
+
+<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+
+  <a class="navbar-brand" href="#"></a>
+
+  <div class="btn-group" role="group">
+    <button type="button" class="btn btn-secondary" data-toggle="modal" ng-click="vm.createProduct()">Добавить товар</button>
+    <button type="button" class="btn btn-secondary" data-toggle="modal" ng-click="vm.createCategory()">Добавить категорию</button>
+  </div>
+
+</nav>
+<div class="row">
+  <div class="col-md-4">
+
+  </div>
+
+  <div class="col-md-8">
+
 
   </div>
 </div>
 
 
-
-
-<div class="modal fade" tabindex="-1" role="dialog" id="prompt" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="prompt-title"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-
-        <div class="alert alert-danger" id="prompt-message" role="alert" style="display: none">
-          <strong>Oops!</strong> Change a few things up and try submitting again.
-        </div>
-
+  <div id="modal-example" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+      <h2 class="uk-modal-title" id="prompt-title"></h2>
+      <p>
         <div id="prompt-body-category">
           <div class="input-group">
             <span class="input-group-addon">Название</span>
@@ -102,11 +117,32 @@
             <input type="number" ng-model="vm.product.price" class="form-control">
           </div>
         </div>
+      </p>
+      <p class="uk-text-right">
+        <button type="button" class="uk-button uk-button-default uk-modal-close" id="prompt-cancel">Отмена</button>
+        <button type="button" class="uk-button uk-button-primary" id="prompt-add">Добавить</button>
+        <button type="button" class="uk-button uk-button-primary" id="prompt-change">Изменить</button>
+        <button type="button" class="btn btn-secondary" id="confirm-dismiss">Нет</button>
+        <button type="button" class="btn btn-primary" id="confirm-ok">Да</button>
+      </p>
+    </div>
+  </div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="prompt" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" id="prompt-cancel">Отмена</button>
-        <button type="button" class="btn btn-primary" id="prompt-add">Добавить</button>
-        <button type="button" class="btn btn-primary" id="prompt-change">Изменить</button>
+
       </div>
     </div>
   </div>
@@ -131,12 +167,11 @@
         </div>
 
         <p id="confirm-text">
-          
+
         </p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" id="confirm-dismiss">Нет</button>
-        <button type="button" class="btn btn-primary" id="confirm-ok">Да</button>
+
       </div>
     </div>
   </div>

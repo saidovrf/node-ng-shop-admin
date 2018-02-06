@@ -1,6 +1,6 @@
 (function () {
 	'use strict';
-	
+
 	angular.module('ngShopAdmin', [])
 
 	.filter('productsFilter', function() {
@@ -17,16 +17,16 @@
 	            		if (input[i].category) {
 	            			if (input[i].category.id === selected) response = response.concat(input[i]); break;
 	            		}
-	            		
+
 	            }
         	}
-            
+
             return response;
         }
     })
 
 	.factory('Alert', function(){
-		
+
 		function _removeEvents(element) {
 			var old_element = element;
 			var new_element = old_element.cloneNode(true);
@@ -53,7 +53,7 @@
 						yesButtonCallback();
 					}
 				});
-				
+
 				dismissButton.addEventListener('click', function() {
 					that.hideConfirm();
 
@@ -62,10 +62,7 @@
 					}
 				});
 
-				$('#confirm').modal({
-					keyboard: false,
-					backdrop: false
-				});
+        UIkit.modal(document.getElementById('confirm')).show();
 			},
 			showConfirmErrorMessage: function(message) {
 				document.querySelector('#confirm .modal-content').classList.remove("loading-back");
@@ -77,7 +74,7 @@
 				if ( document.querySelector('#confirm .modal-content').classList.contains('loading-back') ) {
 					document.querySelector('#confirm .modal-content').classList.remove("loading-back");
 				}
-				
+
 				document.querySelector('#confirm .close').click();
 			},
 			showPrompt: function(headText, options, yesButtonCallback, noButtonCallback) {
@@ -145,7 +142,7 @@
 				if ( document.querySelector('#prompt .modal-content').classList.contains('loading-back') ) {
 					document.querySelector('#prompt .modal-content').classList.remove("loading-back");
 				}
-				
+
 				document.querySelector('#prompt .close').click();
 			},
 		};
@@ -166,7 +163,7 @@
 			$http(
 				options
 			).then(function(response) {
-				if (response.status === 200 || response.status === 201) {	
+				if (response.status === 200 || response.status === 201) {
 					successCallback(response.data);
 				} else {
 					if (errorCallback) {
@@ -188,7 +185,7 @@
 				doRequest('POST', url, data, successCallback, errorCallback);
 			},
 			put: function(url, data, successCallback, errorCallback) {
-				doRequest('PUT', url, data, successCallback, errorCallback);				
+				doRequest('PUT', url, data, successCallback, errorCallback);
 			},
 			delete: function(url, successCallback, errorCallback) {
 				doRequest('DELETE', url, null, successCallback, errorCallback);
