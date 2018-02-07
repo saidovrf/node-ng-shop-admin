@@ -9,7 +9,7 @@
 	function CommonCtrl($scope, HTTP, Alert){
 		var vm = this;
 
-		document.querySelector('.loading-init').classList.remove("loading-init");
+
 
 		vm.products = [];
 		vm.categories = [];
@@ -259,8 +259,8 @@
 				vm.categoriesCount[vm.categories[i].id] = 0;
 			}
 
-			document.querySelector('.loading-back').classList.remove("loading-back");
-			document.querySelector('.loading-padding').classList.remove("loading-padding");
+			// document.querySelector('.loading-back').classList.remove("loading-back");
+			// document.querySelector('.loading-padding').classList.remove("loading-padding");
 
 			HTTP.get('/products', function(response) {
 				vm.products = response;
@@ -279,8 +279,11 @@
 					}
 				}
 
-				document.querySelector('.loading-back').classList.remove("loading-back");
-				document.querySelector('.loading-padding').classList.remove("loading-padding");
+        document.querySelector('.load-stage').classList.remove("load-stage");
+        document.querySelector('.loading').className += " hided";
+
+				// document.querySelector('.loading-back').classList.remove("loading-back");
+				// document.querySelector('.loading-padding').classList.remove("loading-padding");
 			});
 		});
 	}

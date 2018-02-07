@@ -5,22 +5,63 @@ html, body {
   padding: 0;
 }
 body {
-  background: #76b852;
-  background: -webkit-linear-gradient(to right, #8DC26F, #76b852);
-  background: linear-gradient(to right, #8DC26F, #76b852);
-  background-size: 100% 100%;
+  color: #fff;
+  background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
+  background-size: 400% 400%;
+  -webkit-animation: Gradient 15s ease infinite;
+  -moz-animation: Gradient 15s ease infinite;
+  animation: Gradient 15s ease infinite;
 }
 .navbar {
-	background: rgba(255,255,255,.5);
-}
-.navbar a {
-	color: #333 !important;
-}
-.navbar .btn-group {
-	position: absolute;
-    right: 15px;
+	background: rgba(255,255,255,.9) !important;
 }
 
+.menubar {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.menubar h4 {
+  padding-left: 10px;
+}
+.menubar ul li {
+  margin: 0 !important;
+  position: relative;
+  transition: all .1s ease-in-out;
+}
+.menubar ul li:hover {
+  background: rgba(255,255,255,.6);
+}
+.menubar ul li a {
+  padding: 10px;
+  padding-left: 45px;
+  display: inline-block;
+  color: #333;
+  text-decoration: none !important;
+  width: 100%;
+  box-sizing: padding-box !important;
+}
+.menubar ul li button {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  border: none;
+  transition: all .1s ease-in-out;
+  width: 44px;
+  height: 44px;
+  background: none;
+  color: #333;
+  cursor: pointer;
+}
+.menubar ul li button:hover {
+  background: rgba(30,30,30,.5);
+  color: #fff;
+
+}
+.menubar ul li span {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
 
 .menubar {
   background: rgba(255,255,255,.5);
@@ -61,10 +102,7 @@ body {
 
 
 
-.loading-back:before,
-.loading-back:after,
-.loading-init:before,
-.loading-init:after {
+.loading {
 	content: ' ';
 	width: 100%; height: 100%;
 	display: flex;
@@ -73,33 +111,48 @@ body {
 	position: absolute;
 	top: 0; left: 0;
 }
-.loading-back.loading-padding:before,
-.loading-back.loading-padding:after {
-	width: auto !important;
-	left: 15px; right: 15px;
-	z-index: 99999999 !important;
-}
-.loading-back:before {
-	background-color: rgba(255,255,255,.8);
-	z-index: 99999999 !important;
-}
-.loading-back:after {
-	background: url(../images/loading.gif) center center no-repeat;
-	z-index: 99999999 !important;
+.loading.hided {
+  display: none;
 }
 
 
-.loading-init:before {
-	z-index: 999999999;
-  background: #76b852;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #8DC26F, #76b852);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #8DC26F, #76b852); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  background-size: 100% 100%;
+.load-stage {
+  display: none;
 }
-.loading-init:after {
-	z-index: 999999999;
-	content: 'Загрузка приложения. Пожалуйста, подождите...';
-	padding-top: 70px;
-	color: #fff;
-	background: url(../images/loading.gif) center center no-repeat;
+
+
+@-webkit-keyframes Gradient {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+
+@-moz-keyframes Gradient {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+
+@keyframes Gradient {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
